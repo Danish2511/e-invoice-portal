@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
+import Header from './components/Header';
+import Panel from './components/Panel';
+import FileInput from './components/FileInput';
 
-function App() {
+const App = () => {
+  const [file, setFile] = useState(null);
+
+  const handleFileSelect = (selectedFile) => {
+    setFile(selectedFile);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header title="Kraft E-Invoice Portal" />
+      <FileInput onFileSelect={handleFileSelect} />
+      <Panel file={file} />
     </div>
   );
-}
+};
 
 export default App;
