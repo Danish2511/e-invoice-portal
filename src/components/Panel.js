@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import axios from 'axios';
 
@@ -6,18 +6,11 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 const Panel = ({ file }) => {
     const [numPages, setNumPages] = useState(null);
-    const [pageWidth, setPageWidth] = useState(null);
-    const [pageHeight, setPageHeight] = useState(null);
     const [formData, setFormData] = useState(null);
+    const [panelWidth, setPanelWidth] = useState(0);
 
     const handleLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
-    };
-
-    const handlePageLoadSuccess = (page) => {
-        const { width, height } = page.getViewport({ scale: 1 });
-        setPageWidth(width);
-        setPageHeight(height);
     };
 
     const handleExtractClick = async () => {
@@ -39,17 +32,17 @@ const Panel = ({ file }) => {
 
     const renderFormFields = (data, prefix = '') => {
         if (!data) return null;
-    
+
         const capitalize = (str) => {
             return str.replace(/([A-Z])/g, ' $1')
-              .replace(/^./, (s) => s.toUpperCase());
+                .replace(/^./, (s) => s.toUpperCase());
         };
-    
+
         return Object.keys(data).map((key) => {
             const value = data[key];
             const name = prefix ? `${prefix}.${key}` : key;
-            const capitalizedLabel = capitalize(key); // Capitalize the label
-    
+            const capitalizedLabel = capitalize(key);
+
             if (typeof value === 'object' && value !== null) {
                 return (
                     <fieldset key={name}>
@@ -58,58 +51,61 @@ const Panel = ({ file }) => {
                     </fieldset>
                 );
             }
-    
+
             return (
                 <div key={name}>
-                    <label htmlFor={name}>{capitalizedLabel}:</label>
-                    <input
-                        type="text"
-                        id={name}
-                        name={name}
-                        defaultValue={value}
-                        required
-                    />
+                    <label>{capitalizedLabel}</label>
+                    <input type="text" name={name} defaultValue={value} />
                 </div>
             );
         });
     };
 
+    useEffect(() => {
+        const handleResize = () => {
+            setPanelWidth(document.querySelector('.left-panel').offsetWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     return (
         <div className="panel-container">
             <div className="panel left-panel">
                 <h2>PDF Preview</h2>
-                {file ? (
-                    <>
-                        <Document file={file} onLoadSuccess={handleLoadSuccess}>
-                            {Array.from(new Array(numPages), (el, index) => (
-                                <Page
-                                    key={`page_${index + 1}`}
-                                    pageNumber={index + 1}
-                                    onLoadSuccess={handlePageLoadSuccess}
-                                    width={pageWidth}
-                                    height={pageHeight}
-                                />
-                            ))}
-                        </Document>
-                        <div className="extract-button-container">
-                            <button className="extract-button" onClick={handleExtractClick}>
-                                Extract
-                            </button>
-                        </div>
-                    </>
-                ) : (
-                    <p>No file selected</p>
+                {file && (
+                    <Document
+                        file={file}
+                        onLoadSuccess={handleLoadSuccess}
+                        className="react-pdf__Document"
+                    >
+                        {Array.from(new Array(numPages), (el, index) => (
+                            <Page
+                                key={`page_${index + 1}`}
+                                pageNumber={index + 1}
+                                width={panelWidth}
+                                className="react-pdf__Page"
+                            />
+                        ))}
+                    </Document>
                 )}
+                <div className="extract-button-container">
+                    <button onClick={handleExtractClick} className="extract-button">
+                        Extract Data
+                    </button>
+                </div>
             </div>
             <div className="panel right-panel">
-                <h2>Invoice Form</h2>
-                {formData ? (
+                <h2>Form</h2>
+                {formData && (
                     <form>
-                        {renderFormFields(formData.headers)}
-                        <input type="submit" value="Submit" />
+                        {renderFormFields(formData)}
                     </form>
-                ) : (
-                    <p>No data extracted yet</p>
                 )}
             </div>
         </div>

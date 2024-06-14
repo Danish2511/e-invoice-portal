@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 const FileInput = ({ onFileSelect }) => {
     const [file, setFile] = useState(null);
@@ -6,11 +6,10 @@ const FileInput = ({ onFileSelect }) => {
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
-    if (selectedFile && selectedFile.type === 'application/pdf') {
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
-    } else {
-    }
+        if (selectedFile && selectedFile.type === 'application/pdf') {
+            setFile(selectedFile);
+            setFileName(selectedFile.name);
+        }
     };
 
     const handlePreviewClick = () => {
@@ -37,7 +36,7 @@ const FileInput = ({ onFileSelect }) => {
             <span className="file-name">{fileName ? fileName : 'No File Selected'}</span>
             <button className="preview-button" onClick={handlePreviewClick} aria-label="Preview PDF">Preview</button>
         </div>
-    )
+    );
 }
 
 export default FileInput;

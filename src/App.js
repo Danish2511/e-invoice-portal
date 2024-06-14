@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
 import Panel from './components/Panel';
 import FileInput from './components/FileInput';
+import './index.css';
 
 const App = () => {
   const [file, setFile] = useState(null);

@@ -1,5 +1,5 @@
 import React from 'react';
-import LogoIcon from "../assets/images/kraftLogo.png";
+import LogoIcon from "../assets/images/Vkraft.png";
 
 const Header = ({ title }) => {
     return (
@@ -7,7 +7,7 @@ const Header = ({ title }) => {
             <img src={LogoIcon} alt="Kraft Software Solutions" className="logo" />
             <h1 className="title">{title}</h1>
         </header>
-    )
+    );
 }
 
 export default Header;
