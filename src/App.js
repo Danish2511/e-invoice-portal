@@ -22,8 +22,10 @@ const App = () => {
   return (
     <div className="App">
       <Header title="Kraft E-Invoice Portal" />
+      <div className="main-content"> 
       <FileInput onFileSelect={handleFileSelect} onPreviewClick={handlePreviewClick} />
       {showPanels && <Panel file={file} />}
+      </div>
     </div>
   );
 };
