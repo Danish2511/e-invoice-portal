@@ -125,13 +125,15 @@
 
 .file-input-container {
   align-items: center;
-  margin-bottom: 20px;
   border: 2px dashed #007BFF; /* Dashed border for drag-and-drop area */
   padding: 10px;
   border-radius: 4px;
   background-color: #f9f9f9; /* Light background color */
-  margin-top: 85px;
+  margin: 100px;
   padding-left: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction:column;
 }
 
 .file-input {
