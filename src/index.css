@@ -206,14 +206,14 @@ table {
 table thead th {
   background-color: #f2f2f2; /* Light grey background for the table headers */
   text-align: left;
-  padding: 10px;
+  padding: 5px;
   border-bottom: 2px solid #ddd; /* Bottom border for the headers */
   color: #333;
   font-weight: bold;
 }
 
 table tbody td {
-  padding: 10px;
+  padding: 3px;
   border-bottom: 1px solid #ddd; /* Bottom border for the table rows */
 }
 
