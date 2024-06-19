@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import axios from 'axios';
 import InputField from './InputField';
 
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
 
 const Panel = ({ file }) => {
+    const currTime = new Date().toLocaleTimeString();
     const [numPages, setNumPages] = useState(null);
     const [formData, setFormData] = useState({
         supplierName: '',
@@ -42,7 +44,6 @@ const Panel = ({ file }) => {
         invoiceTime: '',
         items: []
     });
-    const [panelWidth, setPanelWidth] = useState(0);
 
     const handleLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -94,7 +95,7 @@ const Panel = ({ file }) => {
                 supplierAddress: responseData.headers.supplier_address || '',
                 invoiceNo: responseData.headers.invoice_no || '',
                 invoiceDate: responseData.headers.invoice_date || '',
-                invoiceTime: responseData.headers.invoice_time || '',
+                invoiceTime: currTime || '',
                 items: responseData.headers.items || []
             });
             console.log(responseData);
@@ -102,19 +103,6 @@ const Panel = ({ file }) => {
             console.error('Error extracting data:', error);
         }
     };
-
-    useEffect(() => {
-        const handleResize = () => {
-            setPanelWidth(document.querySelector('.left-panel').offsetWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -127,7 +115,7 @@ const Panel = ({ file }) => {
     const handleItemChange = (e, index) => {
         const { name, value } = e.target;
         setFormData((prevFormData) => {
-            const updatedItems = prevFormData.items.map((item, i) => 
+            const updatedItems = prevFormData.items.map((item, i) =>
                 i === index ? { ...item, [name]: value } : item
             );
             return {
@@ -139,7 +127,7 @@ const Panel = ({ file }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         const formattedData = {
             headers: {
                 supplier: {
@@ -177,74 +165,74 @@ const Panel = ({ file }) => {
                     },
                     buyerContactNumber: formData.buyerContactNumber,
                 },
-                eInvoiceVersion: '1.0',
-                eInvoiceTypeCode: '01',
-                eInvoiceCodeNumber: 'INV12377',
+                eInvoiceVersion: '',
+                eInvoiceTypeCode: '',
+                eInvoiceCodeNumber: '',
                 eInvoiceDate: formData.invoiceDate,
                 eInvoiceTime: formData.invoiceTime,
                 issuerDigitalSignature: '',
-                invoiceCurrencyCode: 'MYR',
+                invoiceCurrencyCode: '',
                 currencyExchangeRate: 1,
-                frequencyOfBilling: 'Monthly',
-                billingPeriodStartDate: '2017-11-26',
-                billingPeriodEndDate: '2017-11-30',
-                paymentMode: '01',
-                supplierBankAccountNumber: '1234567890123',
-                paymentTerms: 'Payment method is Cash',
-                prePaymentAmount: 1,
-                prePaymentDate: '2000-01-01',
-                prePaymentTime: '12:00:00Z',
-                prePaymentReferenceNumber: 'E12345678912',
-                billReferenceNumber: 'E12345678912',
-                totalExcludingTax: 1436.5,
-                totalIncludingTax: 1436.5,
-                totalPayableAmount: 1436.5,
-                totalNetAmount: 1436.5,
-                totalDiscountValue: 1436.5,
-                totalFeeChargeAmount: 1436.5,
-                totalTaxAmount: 87.63,
-                roundingAmount: 0.3,
-                totalTaxableAmountPerTaxType: 1460.5,
-                totalTaxAmountPerTaxType: 87.63,
-                detailsOfTaxExemption: 'Goods acquired with SST exemption under Sales Tax Act 2018. Reference No: (C01-2345-67890123)',
-                amountExemptedFromTax: 1460.5,
-                taxType: '01',
-                invoiceAdditionalDiscountAmount: 100,
-                invoiceAdditionalFeeAmount: 100,
-                shippingRecipientName: 'Greenz Sdn. Bhd.',
+                frequencyOfBilling: '',
+                billingPeriodStartDate: '',
+                billingPeriodEndDate: '',
+                paymentMode: '',
+                supplierBankAccountNumber: '',
+                paymentTerms: '',
+                prePaymentAmount: null,
+                prePaymentDate: '',
+                prePaymentTime: '',
+                prePaymentReferenceNumber: '',
+                billReferenceNumber: '',
+                totalExcludingTax: null,
+                totalIncludingTax: null,
+                totalPayableAmount: null,
+                totalNetAmount: null,
+                totalDiscountValue: null,
+                totalFeeChargeAmount: null,
+                totalTaxAmount: null,
+                roundingAmount: null,
+                totalTaxableAmountPerTaxType: null,
+                totalTaxAmountPerTaxType: null,
+                detailsOfTaxExemption: '',
+                amountExemptedFromTax: null,
+                taxType: '',
+                invoiceAdditionalDiscountAmount: null,
+                invoiceAdditionalFeeAmount: null,
+                shippingRecipientName: '',
                 ShippingRecipientAddress: {
-                    addressLine0: 'Address line 1',
-                    addressLine1: 'Address line 2',
-                    addressLine2: 'Address line 3',
-                    postalZone: 'Postal Zone',
-                    cityName: 'City Name',
-                    state: 'State',
-                    country: 'Country',
+                    addressLine0: '',
+                    addressLine1: '',
+                    addressLine2: '',
+                    postalZone: '',
+                    cityName: '',
+                    state: '',
+                    country: '',
                 },
-                shippingRecipientTin: 'C22061399000',
-                shippingRecipientRegistrationNumber: 'C22061399000',
-                shippingRecipientPhoneNumber: '+603-1234-5678',
-                supplyOrderReference: 'Supply Order reference #1223',
-                supplyOrderReferenceDate: '2022-10-12',
-                supplyOrderReferenceTime: '12:00:00Z',
-                deliveryOrderReference: 'DO #12345',
-                deliveryOrderReferenceDate: '2022-11-12',
-                deliveryOrderReferenceTime: '12:00:00Z',
-                portOfEntry: 'Port Klang',
-                recipientDeliveryInstructions: 'Recipient Delivery Instructions',
-                portOfEntryCode: 'CODE123',
-                placeOfReceiptByCarrier: 'Port Klang',
-                meansOfTransport: 'Truck',
-                placeOfDelivery: 'Warehouse B',
+                shippingRecipientTin: '',
+                shippingRecipientRegistrationNumber: '',
+                shippingRecipientPhoneNumber: '',
+                supplyOrderReference: '',
+                supplyOrderReferenceDate: '',
+                supplyOrderReferenceTime: '',
+                deliveryOrderReference: '',
+                deliveryOrderReferenceDate: '',
+                deliveryOrderReferenceTime: '',
+                portOfEntry: '',
+                recipientDeliveryInstructions: '',
+                portOfEntryCode: '',
+                placeOfReceiptByCarrier: '',
+                meansOfTransport: '',
+                placeOfDelivery: '',
                 lineItems: formData.items.map((item) => ({
                     itemNumber: item.No,
                     itemDescription: item.Description,
                     itemQuantity: item.Qty,
-                    itemUnitPrice: item["U/Price"],
+                    itemUnitPrice: item[""],
                     itemTotalAmount: item.Amt,
                     itemDiscount: item.Disc,
                     itemTax: item.Tax,
-                    itemNetAmount: item["Net Amt"],
+                    itemNetAmount: item[""],
                 })),
             }
         };
@@ -267,7 +255,6 @@ const Panel = ({ file }) => {
                             <Page
                                 key={`page_${index + 1}`}
                                 pageNumber={index + 1}
-                                width={panelWidth}
                                 className="react-pdf__Page"
                             />
                         ))}
@@ -283,43 +270,43 @@ const Panel = ({ file }) => {
                 <h2>Form</h2>
                 <form onSubmit={handleSubmit}>
                     <h3>Invoice Details</h3>
-                    <InputField label="Invoice No" type="text" name="invoiceNo" value={formData.invoiceNo} onChange={handleInputChange} />
-                    <InputField label="Invoice Date" type="text" name="invoiceDate" value={formData.invoiceDate} onChange={handleInputChange} />
-                    <InputField label="Invoice Time" type="text" name="invoiceTime" value={formData.invoiceTime} onChange={handleInputChange} />
+                    <InputField label="Invoice No" name="invoiceNo" value={formData.invoiceNo} onChange={handleInputChange} />
+                    <InputField label="Invoice Date" name="invoiceDate" value={formData.invoiceDate} onChange={handleInputChange} />
+                    <InputField label="Invoice Time" name="invoiceTime" value={formData.invoiceTime} onChange={handleInputChange} />
 
                     <h3>Supplier Details</h3>
-                    <InputField label="Supplier Name" type="text" name="supplierName" value={formData.supplierName} onChange={handleInputChange} />
-                    {/* <InputField label="Supplier TIN" type="text" name="supplierTin" value={formData.supplierTin} onChange={handleInputChange} /> */}
-                    <InputField label="Supplier Registration" type="text" name="supplierRegistration" value={formData.supplierRegistration} onChange={handleInputChange} />
-                    {/* <InputField label="Supplier Tourism Tax Registration Number" type="text" name="supplierTourismTaxRegistrationNumber" value={formData.supplierTourismTaxRegistrationNumber} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Supplier SST Registration Number" type="text" name="supplierSstRegistrationNumber" value={formData.supplierSstRegistrationNumber} onChange={handleInputChange} /> */}
-                    <InputField label="Supplier Email" type="text" name="supplierEmail" value={formData.supplierEmail} onChange={handleInputChange} />
-                    {/* <InputField label="Supplier Malaysia Standard Industrial Classification (MSIC) Code" type="text" name="supplierMalaysiaStandardIndustrialClassificationMsicCode" value={formData.supplierMalaysiaStandardIndustrialClassificationMsicCode} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Supplier Business Activity Description" type="text" name="supplierBusinessActivityDescription" value={formData.supplierBusinessActivityDescription} onChange={handleInputChange} /> */}
-                    <InputField label="Supplier Address" type="text" name="addressLine0" value={formData.supplierAddress} onChange={handleInputChange} />
-                    {/* <InputField label="Address Line1" type="text" name="addressLine1" value={formData.addressLine1} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Address Line2" type="text" name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Postal Zone" type="text" name="postalZone" value={formData.postalZone} onChange={handleInputChange} /> */}
-                    {/* <InputField label="City Name" type="text" name="cityName" value={formData.cityName} onChange={handleInputChange} /> */}
-                    {/* <InputField label="State" type="text" name="state" value={formData.state} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Country" type="text" name="country" value={formData.country} onChange={handleInputChange} /> */}
-                    <InputField label="Supplier Contact Number" type="text" name="supplierContactNumber" value={formData.supplierContactNumber} onChange={handleInputChange} />
+                    <InputField label="Supplier Name" name="supplierName" value={formData.supplierName} onChange={handleInputChange} />
+                    {/* <InputField label="Supplier TIN" name="supplierTin" value={formData.supplierTin} onChange={handleInputChange} /> */}
+                    <InputField label="Supplier Registration" name="supplierRegistration" value={formData.supplierRegistration} onChange={handleInputChange} />
+                    {/* <InputField label="Supplier Tourism Tax Registration Number" name="supplierTourismTaxRegistrationNumber" value={formData.supplierTourismTaxRegistrationNumber} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Supplier SST Registration Number" name="supplierSstRegistrationNumber" value={formData.supplierSstRegistrationNumber} onChange={handleInputChange} /> */}
+                    <InputField label="Supplier Email" name="supplierEmail" value={formData.supplierEmail} onChange={handleInputChange} />
+                    {/* <InputField label="Supplier Malaysia Standard Industrial Classification (MSIC) Code" name="supplierMalaysiaStandardIndustrialClassificationMsicCode" value={formData.supplierMalaysiaStandardIndustrialClassificationMsicCode} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Supplier Business Activity Description" name="supplierBusinessActivityDescription" value={formData.supplierBusinessActivityDescription} onChange={handleInputChange} /> */}
+                    <InputField label="Supplier Address" name="addressLine0" value={formData.supplierAddress} onChange={handleInputChange} />
+                    {/* <InputField label="Address Line1" name="addressLine1" value={formData.addressLine1} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Address Line2" name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Postal Zone" name="postalZone" value={formData.postalZone} onChange={handleInputChange} /> */}
+                    {/* <InputField label="City Name" name="cityName" value={formData.cityName} onChange={handleInputChange} /> */}
+                    {/* <InputField label="State" name="state" value={formData.state} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Country" name="country" value={formData.country} onChange={handleInputChange} /> */}
+                    <InputField label="Supplier Contact Number" name="supplierContactNumber" value={formData.supplierContactNumber} onChange={handleInputChange} />
 
                     <h3>Buyer Details</h3>
-                    <InputField label="Buyer Name" type="text" name="buyerName" value={formData.buyerName} onChange={handleInputChange} />
-                    {/* <InputField label="Buyer Tin" type="text" name="buyerTin" value={formData.buyerTin} onChange={handleInputChange} /> */}
-                    <InputField label="Buyer Registration" type="text" name="buyerRegistration" value={formData.buyerRegistration} onChange={handleInputChange} />
-                    {/* <InputField label="Buyer SST Registration Number" type="text" name="buyerSstRegistrationNumber" value={formData.buyerSstRegistrationNumber} onChange={handleInputChange} /> */}
-                    <InputField label="Buyer Email" type="text" name="buyerEmail" value={formData.buyerEmail} onChange={handleInputChange} />
-                    {/* <InputField label="Buyer Address" type="text" name="buyerAddressLine0" value={formData.buyerAddressLine0} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Address Line1" type="text" name="buyerAddressLine1" value={formData.buyerAddressLine1} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Address Line2" type="text" name="buyerAddressLine2" value={formData.buyerAddressLine2} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Postal Zone" type="text" name="buyerPostalZone" value={formData.buyerPostalZone} onChange={handleInputChange} /> */}
-                    {/* <InputField label="City Name" type="text" name="buyerCityName" value={formData.buyerCityName} onChange={handleInputChange} /> */}
-                    {/* <InputField label="State" type="text" name="buyerState" value={formData.buyerState} onChange={handleInputChange} /> */}
-                    {/* <InputField label="Country" type="text" name="buyerCountry" value={formData.buyerCountry} onChange={handleInputChange} /> */}
-                    <InputField label="Buyer Address" type="text" name="buyerAddress" value={formData.buyerAddress} onChange={handleInputChange} />
-                    <InputField label="Buyer Contact Number" type="text" name="buyerContactNumber" value={formData.buyerContactNumber} onChange={handleInputChange} />
+                    <InputField label="Buyer Name" name="buyerName" value={formData.buyerName} onChange={handleInputChange} />
+                    {/* <InputField label="Buyer Tin" name="buyerTin" value={formData.buyerTin} onChange={handleInputChange} /> */}
+                    <InputField label="Buyer Registration" name="buyerRegistration" value={formData.buyerRegistration} onChange={handleInputChange} />
+                    {/* <InputField label="Buyer SST Registration Number" name="buyerSstRegistrationNumber" value={formData.buyerSstRegistrationNumber} onChange={handleInputChange} /> */}
+                    <InputField label="Buyer Email" name="buyerEmail" value={formData.buyerEmail} onChange={handleInputChange} />
+                    {/* <InputField label="Buyer Address" name="buyerAddressLine0" value={formData.buyerAddressLine0} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Address Line1" name="buyerAddressLine1" value={formData.buyerAddressLine1} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Address Line2" name="buyerAddressLine2" value={formData.buyerAddressLine2} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Postal Zone" name="buyerPostalZone" value={formData.buyerPostalZone} onChange={handleInputChange} /> */}
+                    {/* <InputField label="City Name" name="buyerCityName" value={formData.buyerCityName} onChange={handleInputChange} /> */}
+                    {/* <InputField label="State" name="buyerState" value={formData.buyerState} onChange={handleInputChange} /> */}
+                    {/* <InputField label="Country" name="buyerCountry" value={formData.buyerCountry} onChange={handleInputChange} /> */}
+                    <InputField label="Buyer Address" name="buyerAddress" value={formData.buyerAddress} onChange={handleInputChange} />
+                    <InputField label="Buyer Contact Number" name="buyerContactNumber" value={formData.buyerContactNumber} onChange={handleInputChange} />
 
                     <h3>Line Items</h3>
                     <table>
@@ -337,16 +324,30 @@ const Panel = ({ file }) => {
                         </thead>
                         <tbody>
                             {formData.items.map((item, index) => (
-                                <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td><input type="text" name="Description" value={item.Description} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="Qty" value={item.Qty} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="U/Price" value={item["U/Price"]} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="Amt" value={item.Amt} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="Disc" value={item.Disc} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="Tax" value={item.Tax} onChange={(e) => handleItemChange(e, index)} /></td>
-                                    <td><input type="text" name="Net Amt" value={item["Net Amt"]} onChange={(e) => handleItemChange(e, index)} /></td>
-                                </tr>
+                                <>
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td><input type="text" name="Description" value={item.Description} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="Qty" value={item.Qty} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="U/Price" value={item["U/Price"]} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="Amt" value={item.Amt} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="Disc" value={item.Disc} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="Tax" value={item.Tax} onChange={(e) => handleItemChange(e, index)} /></td>
+                                        <td><input type="text" name="Net Amt" value={item["Net Amt"]} onChange={(e) => handleItemChange(e, index)} /></td>
+                                    </tr>
+                                    <tr>
+                                    <th colSpan={6} style={{textAlign:'right'}}>Subtotal</th>
+                                    <td colSpan={2} style={{textAlign:'right'}}>RM18,000.00</td>
+                                    </tr>
+                                    <tr>
+                                    <th colSpan={6} style={{textAlign:'right'}}>Service Tax (8%)</th>
+                                    <td colSpan={2} style={{textAlign:'right'}}>RM1,440.00</td>
+                                    </tr>
+                                    <tr>
+                                    <th colSpan={6} style={{textAlign:'right'}}>Total</th>
+                                    <td colSpan={2} style={{textAlign:'right'}}>RM19,440.00</td>
+                                    </tr>
+                                </>
                             ))}
                         </tbody>
                     </table>
