@@ -1,17 +1,12 @@
 import React from 'react';
+import { Col, Input } from 'antd';
 
-const InputField = ({ label, name, value, onChange }) => {
+const InputField = ({ placeholder, name, value, onChange, span }) => {
     return (
-        <div>
-            <label htmlFor={name}>{label}:</label>
-        <input
-            type="text"
-            id={name}
-            name={name}
-            value={value}
-            onChange={onChange}
-        />
-        </div>
+        <Col className="gutter-row" span={span}>
+            <label htmlFor={name}>{placeholder}:</label>
+            <Input placeholder={placeholder} name={name} value={value} onChange={onChange} required />
+        </Col>
     );
 }
 
