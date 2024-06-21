@@ -1,32 +1,48 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/Header';
-import Panel from './components/Panel';
 import FileInput from './components/FileInput';
-import './index.css';
+import Panel from './components/Panel';
+import Login from './components/Login'; // Import the new Login component
 
 const App = () => {
-  const [file, setFile] = useState(null);
-  const [showPanels, setShowPanels] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showPanels, setShowPanels] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  const handleFileSelect = (selectedFile) => {
-    setFile(selectedFile);
-    setShowPanels(false); // Hide panels when a new file is selected
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
   };
 
   const handlePreviewClick = () => {
-    if (file) {
-      setShowPanels(true); // Show panels when Preview button is clicked
-    }
+    setShowPanels(true);
+  };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
   };
 
   return (
-    <div className="App">
+    <Router>
       <Header title="Kraft E-Invoice Portal" />
-      <div className="main-content"> 
-      <FileInput onFileSelect={handleFileSelect} onPreviewClick={handlePreviewClick} />
-      {showPanels && <Panel file={file} />}
-      </div>
-    </div>
+      <Routes>
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route
+          path="/home"
+          element={
+            isAuthenticated ? (
+              <>
+                <FileInput onFileSelect={handleFileSelect} onPreviewClick={handlePreviewClick} />
+                {showPanels && <Panel file={selectedFile} />}
+              </>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
   );
 };
 
